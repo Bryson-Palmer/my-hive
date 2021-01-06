@@ -4,7 +4,9 @@
   "description": "MyHIVE is an employee tracker that allows a user to add and view departments, roles, and employees. A user can also update employee roles.",
   "main": "myHive.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node myHive.js",
+    "watch": "nodemon myHive.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,8 @@
   },
   "homepage": "https://github.com/Bryson-Palmer/my-hive#readme",
   "dependencies": {
+    "asciiart-logo": "^0.2.6",
+    "chalk": "^4.1.0",
     "console.table": "^0.10.0",
     "inquirer": "^7.3.3",
     "mysql": "^2.18.1"
