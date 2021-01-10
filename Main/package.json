@@ -5,8 +5,8 @@
   "main": "myHive.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node myHive.js",
-    "watch": "nodemon myHive.js"
+    "start": "node connection.js",
+    "watch": "nodemon connection.js"
   },
   "repository": {
     "type": "git",

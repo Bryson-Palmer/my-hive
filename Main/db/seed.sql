@@ -32,4 +32,4 @@ VALUES
     ('Margaret','Hamilton' , 5, NULL),
     ('Dorothy', 'Vaughan', 6, 5),
     ('Katherine', 'Johnson', 7, NULL),
-    ('Mary', 'Jackson', 8, 7),
+    ('Mary', 'Jackson', 8, 7);
