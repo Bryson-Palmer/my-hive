@@ -35,94 +35,108 @@ module.exports = {
     },    
 
     // Query insert a new department into department table
-    addDepartment( data ) {
+    addDepartment( deptName ) {
         return connection.query( 'INSERT INTO department SET ?',
         {
-            name: data.name
+            name: deptName.name
         },
         function(err) {
             if (err) throw err;
-            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nDepartment (' + data.name + ') added.' ));
+            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nDepartment (' + deptName.name + ') added.' ));
         });
     },
 
     // Query insert a new role into role table
-    addRole( data ) {
+    addRole( roleData ) {
         const roleInput = {
-            title: data.title,
-            salary: data.salary,
-            department_id: data.department_id
+            title: roleData.title,
+            salary: roleData.salary,
+            department_id: roleData.department_id
         }
         return connection.query( 'INSERT INTO role SET ?', roleInput,
         function(err) {
             if (err) throw err;
-            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nRole (' + data.title + ') added.' ));
+            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nRole (' + roleData.title + ') added.' ));
         });
     },
 
     // Query insert a new employee into employee table
-    addEmployee( data ) {
+    addEmployee( employeeData ) {
         const employeeInput = {
-            first_name: data.first_name,
-            last_name: data.last_name,
-            role_id: data.role_id,
-            manager_id: data.manager_id
+            first_name: employeeData.first_name,
+            last_name: employeeData.last_name,
+            role_id: employeeData.role_id,
+            manager_id: employeeData.manager_id
         }
         return connection.query( 'INSERT INTO employee SET ?', employeeInput,
         function(err) {
             if (err) throw err;
-            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nEmployee (' + data.first_name + ' ' + data.last_name + ') added.' ));
+            console.log( chalk.greenBright( '\n\nSuccess!!!\n\nEmployee (' + employeeData.first_name + ' ' + employeeData.last_name + ') added.' ));
         });
     },
     
     // Query update employee role
-    updateEmployeeRole( data ) {
+    updateEmployeeRole( employeeData ) {
         return connection.query( 'UPDATE employee SET ? WHERE ?', 
         [
             {
-                role_id: data.role_id
+                role_id: employeeData.role_id
             },
             {
-                id: data.id
+                id: employeeData.id
             }
         ],
         function(err) {
             if (err) throw err;
-            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's role changed to (" + data.role_id +")." ));
+            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's role changed to (" + employeeData.role_id +")." ));
         });
     },
 
     // Query update employee manager
-    updateEmployeeManager( answers ) {
+    updateEmployeeManager( employeeData ) {
         return connection.query( 'UPDATE employee SET ? WHERE ?',
         [
             {
-                manager_id: answers.manager_id
+                manager_id: employeeData.manager_id
             },
             {
-                id: answers.id
+                id: employeeData.id
             }
         ],
         function(err, results) {
             if (err) throw err;
-            console.log( results.affectedRows );
-            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's manager ID changed to (" + answers.manager_id + ")" ));
+            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's manager ID changed to (" + employeeData.manager_id + ")" ));
         })
 
     },
 
     // Query delete department
-    deleteDepartment( data ) {
-
+    deleteDepartment( department ) {
+        return connection.query( 'DELETE FROM department WHERE ?', 
+        {
+            id: department.id
+        },
+        function(err, results) {
+            if (err) throw err;
+            console.log( chalk.redBright( '\n\nSuccess!!!\n\nYou have permanently deleted department (' + department.id + ')'));
+        });
     },
 
     // Query delete role
-    deleteRole( data ) {
-
+    deleteRole( role ) {
+        return connection.query( 'DELETE FROM role WHERE ?',
+        {
+            id: role.id
+        },
+        function(err, results) {
+            if (err) throw err;
+            console.log( results );
+            console.log( chalk.redBright( '\n\nSuccess!!!\n\nYou have permanently deleted department (' + role.id + ')'));
+        })
     },
 
     // Query delete employee
-    deleteEmployee( data ) {
+    deleteEmployee( employee ) {
 
     },
 

@@ -173,9 +173,9 @@ let createDepartment = () => {
             }
         }
     ])
-    .then(( name ) => {
+    .then(( deptName ) => {
         // Sending res name to db to be queried
-        db.addDepartment( name );
+        db.addDepartment( deptName );
         whatNext();
     })
 }
@@ -224,7 +224,7 @@ let createRole = () => {
             }
         ])
         .then((roleData) => {
-            // Sending res roleData to db to be queried
+            // Sending roleData to db to be queried
             db.addRole( roleData );
             whatNext();     
         });    
@@ -297,7 +297,7 @@ let createEmployee = () => {
                 }
             ])
             .then(( employeeData ) => {
-                // Sending res employeeData to db to be queried
+                // Sending employeeData to db to be queried
                 db.addEmployee( employeeData );
                 whatNext();
                 
@@ -341,9 +341,9 @@ let modEmployeeRole = () => {
                 },
         
             ])
-            .then(( newRole ) => {
-                // Sending res newRole to db to be queried
-                db.updateEmployeeRole( newRole );
+            .then(( employeeData ) => {
+                // Sending employeeData to db to be queried
+                db.updateEmployeeRole( employeeData );
                 whatNext();
             });
         });
@@ -382,8 +382,9 @@ let modEmployeeManager = () => {
             },
 
         ])
-        .then(( answers ) => {
-            db.updateEmployeeManager( answers );
+        .then(( employeeData ) => {
+            // Sending employeeData to db to be queried
+            db.updateEmployeeManager( employeeData );
             whatNext();
         });
     });
@@ -395,10 +396,57 @@ let modEmployeeManager = () => {
 // Delete a department by id
 let eraseDept = () => {
 
+    // Getting all departments
+    db.getDepartments()
+    .then(( departments ) => {
+        
+        // Sending departments to be mapped for choices
+        let departmentList = mapDepartments( departments );
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'id',
+                message: chalk.greenBright( 'Which department would you like to permanently delete?' ),
+                choices: departmentList
+            },
+        ])
+        .then(( department ) => {
+            // Sending department to db to be queried
+            db.deleteDepartment( department );
+            whatNext();
+        });
+    });
+
 }
 
 // Delete a role by id
 let eraseRole = () => {
+    
+    // Getting all departments
+    db.getRoles()
+    .then(( roles ) => {
+        
+        // Sending departments to be mapped for choices
+        let roleList = mapRoles( roles );
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'id',
+                message: chalk.greenBright( 'Which role would you like to permanently delete?' ),
+                choices: roleList
+            },
+        ])
+        .then(( role ) => {
+            console.log( role );
+            console.log( role.id );
+
+            // Sending answers to db to be queried
+            db.deleteRole( role );
+            whatNext();
+        });
+    });
 
 }
 
@@ -431,11 +479,14 @@ let mapEmployeesByRoleId = employees =>
     }));
 
 // Mapping employee's id into a variable to be used as choices later
-let mapEmployeesById = employees => 
+let mapEmployeesById = employees => {
+
+    // Mapping employees here
     employees.map(( employee ) => ({
         value: employee.id,
         name: `${employee.first_name} ${employee.last_name}`
     }));
+}
 
 // Mapping managers into a variable to be used as choices later
 let mapManagers = managers => 
