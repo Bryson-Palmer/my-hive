@@ -240,14 +240,14 @@ let createEmployee = () => {
     .then(( roles )  => {
         
         // Sending roles to be mapped for choices
-        let roleList = mapEmployeesByRoleId( roles );
+        let roleList = mapRoles( roles );
 
         // Getting all employees from employee table
         db.getEmployees()
         .then(( employees ) => {
             
             // Sending employees to be mapped for choices
-            let employeeList = mapEmployees( employees );
+            let employeeList = mapEmployeesByRoleId( employees );
 
             inquirer.prompt([
                 {
@@ -439,8 +439,6 @@ let eraseRole = () => {
             },
         ])
         .then(( role ) => {
-            console.log( role );
-            console.log( role.id );
 
             // Sending answers to db to be queried
             db.deleteRole( role );
@@ -452,6 +450,30 @@ let eraseRole = () => {
 
 // Delete an employee by id
 let eraseEmployee = () => {
+
+    // Getting all employees
+    db.getEmployees()
+    .then(( employees ) => {
+        
+        // Sending employees to be mapped for choices
+        let employeeList = mapEmployeesById( employees );
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'id',
+                message: chalk.greenBright( 'Which employee would you like to permanently delete?' ),
+                choices: employeeList
+            },
+        ])
+        .then(( employee ) => {
+            // console.log( employee.name );
+
+            // Sending answers to db to be queried
+            db.deleteEmployee( employee );
+            whatNext();
+        });
+    });
     
 }
 
@@ -479,14 +501,11 @@ let mapEmployeesByRoleId = employees =>
     }));
 
 // Mapping employee's id into a variable to be used as choices later
-let mapEmployeesById = employees => {
-
-    // Mapping employees here
+let mapEmployeesById = employees => 
     employees.map(( employee ) => ({
         value: employee.id,
         name: `${employee.first_name} ${employee.last_name}`
     }));
-}
 
 // Mapping managers into a variable to be used as choices later
 let mapManagers = managers => 

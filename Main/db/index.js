@@ -130,14 +130,20 @@ module.exports = {
         },
         function(err, results) {
             if (err) throw err;
-            console.log( results );
             console.log( chalk.redBright( '\n\nSuccess!!!\n\nYou have permanently deleted department (' + role.id + ')'));
         })
     },
 
     // Query delete employee
     deleteEmployee( employee ) {
-
+        return connection.query( 'DELETE FROM employee WHERE ?',
+        {
+            id: employee.id
+        },
+        function(err, results) {
+            if (err) throw err;
+            console.log( chalk.redBright( '\n\nSuccess!!!\n\nYou have permanently deleted department (' + employee.id + ')'));
+        })
     },
 
 }
