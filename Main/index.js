@@ -50,6 +50,13 @@ let whatNext = () => {
                     viewEmployees();
                     return;
 
+                case 'VIEW_EMPLOYEES_BY_MANAGER':
+                    viewEmployeesByManager();
+                    return;
+
+                case 'VIEW_TOTAL_BUDGET_FOR_DEPARTMENT':
+                    viewTotalBudgetForDept()
+
                 case 'ADD_DEPARTMENT':
                     createDepartment();
                     return;
@@ -62,8 +69,24 @@ let whatNext = () => {
                     createEmployee();
                     return;
 
-                case 'ADD_EMPLOYEE':
-                    createEmployee();
+                case 'UPDATE_EMPLOYEE_ROLE':
+                    modEmployeeRole();
+                    return;
+
+                case 'UPDATE_EMPLOYEE_MANAGER':
+                    modEmployeeManager();
+                    return;
+
+                case 'DELETE_DEPARTMENT':
+                    eraseDept();
+                    return;
+
+                case 'DELETE_ROLE':
+                    eraseRole();
+                    return;
+
+                case 'DELETE_EMPLOYEE':
+                    eraseEmployee();
                     return;
  
                 default:
@@ -121,6 +144,16 @@ let viewEmployees = () => {
     });
 }
 
+// View employees by manager
+let viewEmployeesByManager = () => {
+
+}
+
+// View employees by manager
+let viewTotalBudgetForDept = () => {
+    
+}
+
 // ------------------- POST Requests ------------------- \\
 
 // Creates a departement and adds it to the department table
@@ -131,12 +164,12 @@ let createDepartment = () => {
         {
             type: 'input',
             name: 'name',
-            message: chalk.greenBright('What is the department name being added?'),
+            message: chalk.greenBright( 'What is the department name being added?' ),
             validate: ( value ) => {
                 if( value !== '' ) {
                     return true;
                 }
-                return console.log( chalk.yellowBright('Must provide a department name.'));
+                return console.log( chalk.yellowBright( 'Must provide a department name.' ));
             }
         }
     ])
@@ -162,31 +195,31 @@ let createRole = () => {
             {
                 type: 'list',
                 name: 'department_id',
-                message: chalk.greenBright('What department is this role for?'),
+                message: chalk.greenBright( 'What department is this role for?' ),
                 choices: departmentList
             },
 
             {
                 type: 'input',
                 name: 'title',
-                message: chalk.greenBright('What is the title of this role?'),
+                message: chalk.greenBright( 'What is the title of this role?' ),
                 validate: ( value ) => {
                     if( value !== '' ) {
                         return true;
                     }
-                    return console.log( chalk.yellowBright('Must provide a title for this role.'));
+                    return console.log( chalk.yellowBright( 'Must provide a title for this role.' ));
                 }
             },
 
             {
                 type: 'number',
                 name: 'salary',
-                message: chalk.greenBright('What is the annual salary for this role?'),
+                message: chalk.greenBright( 'What is the annual salary for this role?' ),
                 validate: ( value ) => {
                 if( !(isNaN( value ))) {
                         return true;
                     }
-                   return console.log( chalk.yellowBright('Must provide only numbers.'));
+                   return console.log( chalk.yellowBright( 'Must provide only numbers.' ));
                 }
             }
         ])
@@ -207,7 +240,7 @@ let createEmployee = () => {
     .then(( roles )  => {
         
         // Sending roles to be mapped for choices
-        let roleList = mapRoles( roles );
+        let roleList = mapEmployeesByRoleId( roles );
 
         // Getting all employees from employee table
         db.getEmployees()
@@ -220,45 +253,45 @@ let createEmployee = () => {
                 {
                     type: 'input',
                     name: 'first_name',
-                    message: chalk.greenBright('What is the first name of this employee?'),
+                    message: chalk.greenBright( 'What is the first name of this employee?' ),
                     validate: ( value ) => {
                         if( value !== '' ) {
                             return true;
                         }
-                        return console.log( chalk.yellowBright('Must provide a first name for this employee.'));
+                        return console.log( chalk.yellowBright( 'Must provide a first name for this employee.' ));
                     }
                 },
 
                 {
                     type: 'input',
                     name: 'last_name',
-                    message: chalk.greenBright('What is the last name of this employee?'),
+                    message: chalk.greenBright( 'What is the last name of this employee?' ),
                     validate: ( value ) => {
                         if( value !== '' ) {
                             return true;
                         }
-                        return console.log( chalk.yellowBright('Must provide a last name for this employee.'));
+                        return console.log( chalk.yellowBright( 'Must provide a last name for this employee.' ));
                     }
                 },
 
                 {
                     type: 'list',
                     name: 'role_id',
-                    message: chalk.greenBright('What is the role of this employee?'),
+                    message: chalk.greenBright( 'What is the role of this employee?' ),
                     choices: roleList
                 },
 
                 {
                     type: 'confrim',
                     name: 'is_manager',
-                    message: chalk.greenBright('Is this employee a manager? y/n'),
+                    message: chalk.greenBright( 'Is this employee a manager? y/n' ),
                     default: 'n'
                 },
 
                 {
                     type: 'list',
                     name: 'manager_id',
-                    message: chalk.greenBright("Who is this employee's manager?"),
+                    message: chalk.greenBright( "Who is this employee's manager?" ),
                     choices: employeeList,
                     when: ( value ) => value.is_manager === 'n'
                 }
@@ -275,32 +308,160 @@ let createEmployee = () => {
 
 // ------------------- UPDATE Requests ------------------- \\
 
+// Modifies an employee's role
+let modEmployeeRole = () => {
+
+    // Getting all employees from employee table
+    db.getEmployees()
+    .then(( employees ) => {
+        
+        // Sending employees to be mapped for choices
+        let employeeList = mapEmployeesById( employees );
+        
+        // Getting all roles from role table
+        db.getRoles()
+        .then(( roles )  => {
+        
+            // Sending roles to be mapped for choices
+            let roleList = mapRoles( roles );
+
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'id',
+                    message: chalk.greenBright( 'Who is the employee you want to change the roll for?' ),
+                    choices: employeeList
+                },
+        
+                {
+                    type: 'list',
+                    name: 'role_id',
+                    message: chalk.greenBright( 'What role would you like to assign this empolyee?' ),
+                    choices: roleList
+                },
+        
+            ])
+            .then(( newRole ) => {
+                // Sending res newRole to db to be queried
+                db.updateEmployeeRole( newRole );
+                whatNext();
+            });
+        });
+    });
+}
+
+// Modifies an employee's assigned manager
+let modEmployeeManager = () => {
+    
+    // Getting all employees from employee table
+    db.getEmployees()
+    .then(( employees ) => {
+
+        // Mapping employee list
+        let employeeList = mapEmployeesById( employees );
+
+        // Sorting managers
+        let manager = getManagers( employees );
+
+        // Mapping managers
+        let managerList = mapManagers( manager );
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'id',
+                message: chalk.greenBright( 'Which employee needs to be assigned a new manager?' ),
+                choices: employeeList
+            },
+
+            {
+                type: 'list',
+                name: 'manager_id',
+                message: chalk.greenBright( 'Which manager would you like to assign this employee?' ),
+                choices: managerList
+            },
+
+        ])
+        .then(( answers ) => {
+            db.updateEmployeeManager( answers );
+            whatNext();
+        });
+    });
+    
+}
 
 // ------------------- DELETE Requests ------------------- \\
 
+// Delete a department by id
+let eraseDept = () => {
+
+}
+
+// Delete a role by id
+let eraseRole = () => {
+
+}
+
+// Delete an employee by id
+let eraseEmployee = () => {
+    
+}
 
 // ------------------- MAP FUNCTIONS ------------------- \\
 
 // Mapping departments into a variable to be used as choices
 let mapDepartments = departments =>
-departments.map( (department) => ({
-    value: department.id,
-    name: department.name
-}));
+    departments.map( (department) => ({
+        value: department.id,
+        name: department.name
+    }));
 
 // Mapping roles into a variable to be used as choices later
 let mapRoles = roles => 
-roles.map(( role ) => ({
-    value: role.id,
-    name: role.title
-}));
+    roles.map(( role ) => ({
+        value: role.id,
+        name: role.title
+    }));
 
-// Mapping employees into a variable to be used as choices later
-let mapEmployees = employees => 
-employees.map(( employee ) => ({
-    value: employee.id,  
-    name: `${employee.first_name} ${employee.last_name}`
-}));
+// Mapping employee's role id/name into a variable to be used as choices later
+let mapEmployeesByRoleId = employees => 
+    employees.map(( employee ) => ({
+        value: employee.role_id, 
+        name: `${employee.first_name} ${employee.last_name}`
+    }));
+
+// Mapping employee's id into a variable to be used as choices later
+let mapEmployeesById = employees => 
+    employees.map(( employee ) => ({
+        value: employee.id,
+        name: `${employee.first_name} ${employee.last_name}`
+    }));
+
+// Mapping managers into a variable to be used as choices later
+let mapManagers = managers => 
+    managers.map(( manager ) => ({
+        value: manager.id,
+        name: `${manager.first_name} ${manager.last_name}`
+    }));
+
+// Mapping employee's id into a variable to be used as choices later
+let getManagers = employees => {
+    
+    // New array for managers
+    let manager = [];
+
+    // For loop over employees
+    for( let i = 0; i < employees.length -1; ++i ) {
+
+        // If manager id is null
+        // Push to new array
+        if( employees[i].manager_id === null ) {
+            manager.push( employees[i] );
+        }
+    }
+    // Return!!!
+    return manager;
+}
 
 
 console.log( chalk.greenBright( logo( config ).render() ));

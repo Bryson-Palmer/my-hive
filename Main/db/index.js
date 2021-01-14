@@ -18,10 +18,21 @@ module.exports = {
     getRoles() {
         return connection.query( 'SELECT * FROM role' );
     },
+
     // Query select all employees from employee table
     getEmployees() {
         return connection.query( 'SELECT * FROM employee' );
     },
+
+    // Query select all employees by manager
+    getEmployeesByManager() {
+        return;
+    },
+
+    // Query select total budget for department
+    getTotalBudgetForDepartment() {
+        return;
+    },    
 
     // Query insert a new department into department table
     addDepartment( data ) {
@@ -58,10 +69,61 @@ module.exports = {
             manager_id: data.manager_id
         }
         return connection.query( 'INSERT INTO employee SET ?', employeeInput,
-        function(err){
+        function(err) {
             if (err) throw err;
             console.log( chalk.greenBright( '\n\nSuccess!!!\n\nEmployee (' + data.first_name + ' ' + data.last_name + ') added.' ));
         });
+    },
+    
+    // Query update employee role
+    updateEmployeeRole( data ) {
+        return connection.query( 'UPDATE employee SET ? WHERE ?', 
+        [
+            {
+                role_id: data.role_id
+            },
+            {
+                id: data.id
+            }
+        ],
+        function(err) {
+            if (err) throw err;
+            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's role changed to (" + data.role_id +")." ));
+        });
+    },
+
+    // Query update employee manager
+    updateEmployeeManager( answers ) {
+        return connection.query( 'UPDATE employee SET ? WHERE ?',
+        [
+            {
+                manager_id: answers.manager_id
+            },
+            {
+                id: answers.id
+            }
+        ],
+        function(err, results) {
+            if (err) throw err;
+            console.log( results.affectedRows );
+            console.log( chalk.greenBright( "\n\nSuccess!!!\n\nEmployee's manager ID changed to (" + answers.manager_id + ")" ));
+        })
+
+    },
+
+    // Query delete department
+    deleteDepartment( data ) {
+
+    },
+
+    // Query delete role
+    deleteRole( data ) {
+
+    },
+
+    // Query delete employee
+    deleteEmployee( data ) {
+
     },
 
 }
