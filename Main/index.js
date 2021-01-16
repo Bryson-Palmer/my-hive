@@ -90,14 +90,16 @@ let whatNext = () => {
                     return;
  
                 default:
-                    console.log( chalk.greenBright( '\n\n               --'));
-                    console.log( chalk.greenBright( '            --------'));
-                    console.log( chalk.greenBright( '          -------->*<-'));
-                    console.log( chalk.greenBright( '         --------------'));
-                    console.log( chalk.greenBright( '\n        |  myHive out  | \n'));
-                    console.log( chalk.greenBright( '         --------------'));
-                    console.log( chalk.greenBright( '          ------------'));
-                    console.log( chalk.greenBright( '            --------\n\n'));
+                    console.log( '\n\n' );
+                    console.log( chalk.greenBright( '               --'       ));
+                    console.log( chalk.greenBright( '            --------'    ));
+                    console.log( chalk.greenBright( '          -------->*<-'  ));
+                    console.log( chalk.greenBright( '         --------------' ));
+                    console.log( chalk.greenBright( '        |    myHive    |'));
+                    console.log( chalk.greenBright( '         --------------' ));
+                    console.log( chalk.greenBright( '          ------------'  ));
+                    console.log( chalk.greenBright( '            --------'    ));
+                    console.log( '\n\n\n' );
                     connection.end();
             }
         });
