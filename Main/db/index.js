@@ -55,9 +55,9 @@ module.exports = {
     },
 
     // Query select total budget for department
-    getTotalBudgetForDepartment() {
-        return;
-    },
+    // getTotalBudgetForDepartment() {
+    //     return;
+    // },
 
     // ------------------- POST Requests ------------------- \\
 

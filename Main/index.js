@@ -8,19 +8,19 @@ const db = require('./db');
 
 // Brings up a list of what the user can do next
 let whatNext = () => {
-    // console.log('\n\n')
+    
     inquirer
         .prompt({
             type: 'list',
             name: 'action',
-            message: chalk.greenBright('\nWhat would you like to do?'),
+            message: chalk.greenBright('What would you like to do?'),
             choices: [
                 new inquirer.Separator(),
                 'VIEW_DEPARTMENTS',
                 'VIEW_ROLES',
                 'VIEW_EMPLOYEES',
                 'VIEW_EMPLOYEES_BY_MANAGER',
-                'VIEW_TOTAL_BUDGET_FOR_DEPARTMENT',
+                // 'VIEW_TOTAL_BUDGET_FOR_DEPARTMENT',
                 new inquirer.Separator(),
                 'ADD_DEPARTMENT',
                 'ADD_ROLE',
@@ -51,11 +51,12 @@ let whatNext = () => {
                     return;
 
                 case 'VIEW_EMPLOYEES_BY_MANAGER':
+                    console.log( '\n' );
                     viewEmployeesByManager();
                     return;
 
-                case 'VIEW_TOTAL_BUDGET_FOR_DEPARTMENT':
-                    viewTotalBudgetForDept()
+                // case 'VIEW_TOTAL_BUDGET_FOR_DEPARTMENT':
+                //     viewTotalBudgetForDept()
 
                 case 'ADD_DEPARTMENT':
                     createDepartment();
@@ -98,7 +99,7 @@ let whatNext = () => {
                     console.log( chalk.greenBright( '        |    myHive    |'));
                     console.log( chalk.greenBright( '         --------------' ));
                     console.log( chalk.greenBright( '          ------------'  ));
-                    console.log( chalk.greenBright( '            --------'    ));
+                    console.log( chalk.greenBright( '            GOOD BYE'    ));
                     console.log( '\n\n\n' );
                     connection.end();
             }
@@ -109,46 +110,45 @@ let whatNext = () => {
 
 // View all departments
 let viewDepartments = () => {
-    console.log('\n');
 
     // Getting all departments with query
     db.getDepartments()
     .then(( departments )  => {
         // Console.table departments
         console.table( departments );
+        console.log('\n');
         whatNext();
     });
 }
 
 // View all roles
 let viewRoles = () => {
-    console.log('\n');
 
     // Getting all rolse with query
     db.getRoles()
     .then(( roles ) => {
         // Console.table rolse
         console.table( roles );
+        console.log('\n');
         whatNext();
     });  
 }
 
 // View all employees
 let viewEmployees = () => {
-    console.log('\n');
 
     // Getting all employees with query
     db.getEmployees()
     .then(( employees ) => {
         // Console.table employees
         console.table( employees );
+        console.log('\n');
         whatNext();
     });
 }
 
 // View employees by manager
 let viewEmployeesByManager = () => {
-    console.log('\n');
 
     // Getting all employees with query
     db.getEmployees()
@@ -172,7 +172,9 @@ let viewEmployeesByManager = () => {
 
             // Getting employees by manager id
             const employeesByManager = db.getEmployeesByManager( managerId )
-            .then(( employeesByManager ) => {});
+            .then(( employeesByManager ) => {
+            });
+            // console.log('\n');
             whatNext();
         });
     });
@@ -180,15 +182,14 @@ let viewEmployeesByManager = () => {
 }
 
 // View employees by manager
-let viewTotalBudgetForDept = () => {
+// let viewTotalBudgetForDept = () => {
     
-}
+// }
 
 // ------------------- POST Requests ------------------- \\
 
 // Creates a departement and adds it to the department table
 let createDepartment = () => {
-    console.log('\n');
 
     inquirer.prompt([
         {
@@ -206,13 +207,13 @@ let createDepartment = () => {
     .then(( deptName ) => {
         // Sending res name to db to be queried
         db.addDepartment( deptName );
+        console.log('\n');
         whatNext();
-    })
+    });
 }
 
 // Creates a role and adds it to the role table
 let createRole = () => {
-    console.log('\n');
    
     // Getting all departments from department table
     db.getDepartments()
@@ -256,6 +257,7 @@ let createRole = () => {
         .then((roleData) => {
             // Sending roleData to db to be queried
             db.addRole( roleData );
+            console.log('\n');
             whatNext();     
         });    
     });
@@ -263,7 +265,6 @@ let createRole = () => {
 
 // Creates an employee and adds it to the employee table
 let createEmployee = () => {
-    console.log('\n');
 
     // Getting all roles from role table
     db.getRoles()
@@ -329,6 +330,7 @@ let createEmployee = () => {
             .then(( employeeData ) => {
                 // Sending employeeData to db to be queried
                 db.addEmployee( employeeData );
+                console.log('\n');
                 whatNext();
                 
             })  
@@ -373,6 +375,7 @@ let modEmployeeRole = () => {
             .then(( employeeData ) => {
                 // Sending employeeData to db to be queried
                 db.updateEmployeeRole( employeeData );
+                console.log('\n');
                 whatNext();
             });
         });
@@ -413,6 +416,7 @@ let modEmployeeManager = () => {
         .then(( employeeData ) => {
             // Sending employeeData to db to be queried
             db.updateEmployeeManager( employeeData );
+            console.log('\n');
             whatNext();
         });
     });
@@ -442,6 +446,7 @@ let eraseDept = () => {
         .then(( department ) => {
             // Sending department to db to be queried
             db.deleteDepartment( department );
+            console.log('\n');
             whatNext();
         });
     });
@@ -470,6 +475,7 @@ let eraseRole = () => {
 
             // Sending answers to db to be queried
             db.deleteRole( role );
+            console.log('\n');
             whatNext();
         });
     });
@@ -499,6 +505,7 @@ let eraseEmployee = () => {
 
             // Sending answers to db to be queried
             db.deleteEmployee( employee );
+            console.log('\n');
             whatNext();
         });
     });
@@ -535,13 +542,6 @@ let mapEmployeesById = employees =>
         name: `${employee.first_name} ${employee.last_name}`
     }));
 
-// Mapping employee's manager id into a variable to be used as choices later
-// let mapEmployeesByManagerId = employees => 
-//     employees.map(( employee ) => ({
-//         value: employee.manager_id,
-//         name: `${employee.first_name} ${employee.last_name}`
-//     }));
-
 // Mapping managers into a variable to be used as choices later
 let mapManagers = managers => 
     managers.map(( manager ) => ({
@@ -568,7 +568,8 @@ let getManagers = employees => {
     return manager;
 }
 
-
+// myHive Logo on loading
 console.log( chalk.greenBright( logo( config ).render() ));
 
+// Prompt user to choose an action
 whatNext();

@@ -16,7 +16,7 @@ connection.connect((err) => {
     // If err connecting throw error
     if(err) throw err;
     // Otherwise console success message
-    console.log(chalk.greenBright('\n\n(Connected as id' + connection.threadId + ')\n'));
+    console.log(chalk.greenBright('\n(Connected as Thread ID: ' + connection.threadId + ')'));
 });
 
 // Setting up connection.query to use promises instead of callbacks
