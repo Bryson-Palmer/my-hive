@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const logo = require('asciiart-logo');
 const config = require('./package.json');
 const db = require('./db');
-const { createPromptModule } = require('inquirer');
+// const { createPromptModule } = require('inquirer');
 
 // Brings up a list of what the user can do next
 let whatNext = () => {
@@ -146,6 +146,34 @@ let viewEmployees = () => {
 
 // View employees by manager
 let viewEmployeesByManager = () => {
+    console.log('\n');
+
+    // Getting all employees with query
+    db.getEmployees()
+    .then(( employees )  => {
+        
+        // Sorting managers
+        let manager = getManagers( employees );
+
+        // Mapping managers by id
+        let managerList = mapManagers( manager );
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'id',
+                message: chalk.greenBright( 'Which manager would you like to view employees for?' ),
+                choices: managerList
+            }
+        ])
+        .then(( managerId ) => { 
+
+            // Getting employees by manager id
+            const employeesByManager = db.getEmployeesByManager( managerId )
+            .then(( employeesByManager ) => {});
+            whatNext();
+        });
+    });
 
 }
 
@@ -339,7 +367,6 @@ let modEmployeeRole = () => {
                     message: chalk.greenBright( 'What role would you like to assign this empolyee?' ),
                     choices: roleList
                 },
-        
             ])
             .then(( employeeData ) => {
                 // Sending employeeData to db to be queried
@@ -380,7 +407,6 @@ let modEmployeeManager = () => {
                 message: chalk.greenBright( 'Which manager would you like to assign this employee?' ),
                 choices: managerList
             },
-
         ])
         .then(( employeeData ) => {
             // Sending employeeData to db to be queried
@@ -507,6 +533,13 @@ let mapEmployeesById = employees =>
         name: `${employee.first_name} ${employee.last_name}`
     }));
 
+// Mapping employee's manager id into a variable to be used as choices later
+// let mapEmployeesByManagerId = employees => 
+//     employees.map(( employee ) => ({
+//         value: employee.manager_id,
+//         name: `${employee.first_name} ${employee.last_name}`
+//     }));
+
 // Mapping managers into a variable to be used as choices later
 let mapManagers = managers => 
     managers.map(( manager ) => ({
@@ -514,7 +547,7 @@ let mapManagers = managers =>
         name: `${manager.first_name} ${manager.last_name}`
     }));
 
-// Mapping employee's id into a variable to be used as choices later
+// Sorting managers into a variable to be used as choices later
 let getManagers = employees => {
     
     // New array for managers

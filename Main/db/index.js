@@ -7,6 +7,9 @@ const chalk = require('chalk');
 
 module.exports = {
 
+    // ------------------- GET Requests ------------------- \\
+
+
     // Query select all departments from department table
     getDepartments() {
         // Have to return the promise so when function is called 
@@ -25,14 +28,38 @@ module.exports = {
     },
 
     // Query select all employees by manager
-    getEmployeesByManager() {
-        return;
+    getEmployeesByManager( managerId ) {
+        let x = connection.query( 
+        `SELECT 
+            CONCAT
+                (e.first_name, " ", e.last_name) AS Employees, e.manager_id,
+            CONCAT
+                (m.first_name, " ", m.last_name) AS Manager, m.id
+            FROM 
+                employee e, employee m
+            WHERE 
+                m.? 
+            AND 
+                m.id = e.manager_id
+            ORDER BY 
+                Manager`,
+            {
+                id: managerId.id
+            },
+            function(err, results) {
+                if (err) throw err;
+                console.log( '\n' );
+                console.table(  results );
+            });
+        return x;      
     },
 
     // Query select total budget for department
     getTotalBudgetForDepartment() {
         return;
-    },    
+    },
+
+    // ------------------- POST Requests ------------------- \\
 
     // Query insert a new department into department table
     addDepartment( deptName ) {
@@ -75,6 +102,8 @@ module.exports = {
         });
     },
     
+    // ------------------- UPDATE Requests ------------------- \\
+
     // Query update employee role
     updateEmployeeRole( employeeData ) {
         return connection.query( 'UPDATE employee SET ? WHERE ?', 
@@ -109,6 +138,8 @@ module.exports = {
         })
 
     },
+
+    // ------------------- DELETE Requests ------------------- \\
 
     // Query delete department
     deleteDepartment( department ) {
